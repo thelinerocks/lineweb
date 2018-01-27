@@ -38,3 +38,27 @@ span.logo {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.message {
+    float: right;
+    padding-right: 10px;
+}
+
+.card-text-head {
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+.card-text-body {
+    padding-left: 10px;
+}
+
+span.line {
+  display: inline-block;
+}
+/*
+iframe[id^='twitter-widget-0'] {
+    height:600px !important;
+    margin-bottom:10px !important;
+    width:100% !important;
+}*/
