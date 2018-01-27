@@ -1,0 +1,104 @@
+<html>
+  <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.34.0/smoothie.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  </head>
+  <body>
+    <header class="navbar">
+      <section class="navbar-section">
+        <!-- <a href="#" class="btn btn-link">Docs</a>
+        <a href="#" class="btn btn-link">Examples</a> -->
+      </section>
+      <section class="navbar-center">
+        <span class="logo">LINE</span>
+      </section>
+      <section class="navbar-section">
+        <!-- <a href="#" class="btn btn-link">Twitter</a>
+        <a href="#" class="btn btn-link">GitHub</a> -->
+      </section>
+    </header>
+
+    <div id="page" class="container" style="padding-bottom: 5px;">
+      <div class="columns">
+      <div class="col-12">
+        <canvas id="line" width="2000px" height="1000px"></canvas>
+      </div>
+      </div>
+
+      <div class="columns hashtags">
+        <div class="col-5">#ichacklower</div>
+        <div class="col-2 vs">vs</div>
+        <div class="col-5">#ichackupper</div>
+      </div>
+
+      <div class="columns feeds">
+        <div class="col-5">
+          <div class="card">
+              <div class="card-header">
+                <div class="card-title h5">@ichack</div>
+                <div class="card-subtitle text-gray">Hardware and software</div>
+              </div>
+              <div class="card-image">
+                <img class="img-responsive" src="test.jpg" alt="OS X Yosemite">
+              </div>
+              <div class="card-body">
+                #ichackupper has better music. #lineup.
+              </div>
+            </div>
+
+        </div>
+        <div class="col-5"></div>
+      </div>
+
+    </div>
+    <script type="text/javascript">
+
+      // Random data
+      var line1 = new TimeSeries();
+      var line2 = new TimeSeries();
+      setInterval(function() {
+        line1.append(new Date().getTime(), Math.random());
+        line2.append(new Date().getTime(), Math.random());
+      }, 1000);
+
+			window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+						var canvas = document.getElementById("line");
+            canvas.width = window.innerWidth;
+            canvas.height = Math.max(450, window.innerHeight*0.60);
+
+            /**
+             * Your drawings need to be inside this function otherwise they will be reset when
+             * you resize the browser window and the canvas goes will be cleared.
+             */
+    }
+    resizeCanvas();
+
+      var smoothie = new SmoothieChart(
+        { grid: { strokeStyle: '#262626',
+            fillStyle: '#262626',
+            lineWidth: 1,
+            millisPerLine: 250,
+            verticalSections: 0
+          }, labels: {
+            disabled: false,
+            fillStyle: "#656565",
+            fontFamily: "Roboto, sans-serif",
+            fontSize: 15,
+            precision: 0
+          }
+        });
+      smoothie.addTimeSeries(line1, { strokeStyle: '#d1d1d1', lineWidth: 2 });
+      smoothie.addTimeSeries(line2, { strokeStyle: '#235ba0', lineWidth: 2 });
+
+      smoothie.streamTo(document.getElementById("line"), 1000);
+    </script>
+
+  </body>
+</html>

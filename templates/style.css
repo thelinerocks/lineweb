@@ -1,0 +1,40 @@
+.navbar {
+  background-color: #262626;
+  color: #FFF;
+  padding-top: 5px;
+}
+
+.navbar a {
+  color: #FFF;
+  text-decoration: none;
+}
+
+span.logo {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2em;
+}
+
+.hashtags {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  font-size: 1.5em;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.vs::before {
+  content: "\2014\00a0"
+}
+
+.vs::after {
+  content: "\00a0\2014"
+}
+
+.vs {
+  color: #dedede;
+}
+
+.feeds {
+  padding-left: 10px;
+  padding-right: 10px;
+}
