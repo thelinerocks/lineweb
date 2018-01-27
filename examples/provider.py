@@ -23,12 +23,12 @@ if __name__=="__main__":
 
     while True:
         time.sleep(0.05)
-        val = random.random()*1
+        val = random.random()*5
         r.lpush(hashtag1, val)
         if r.llen(hashtag1) > 1000:
             r.rpop(hashtag1)
 
-        val = random.random()*1
+        val = random.random()*5
         r.lpush(hashtag2, val)
         if r.llen(hashtag2) > 1000:
             r.rpop(hashtag2)
