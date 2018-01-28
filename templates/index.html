@@ -94,42 +94,51 @@
     $( document ).ready(function() {
       var source   = document.getElementById("handlebar-template").innerHTML;
       var template = Handlebars.compile(source);
+      var full_url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+
 
       // Random data
-      var line1 = new TimeSeries();
-      var line2 = new TimeSeries();
-      var socket = io.connect('http://localhost:5000');
+      var left_line = new TimeSeries();
+      var left = io.connect(full_url+'/{{ left.category }}');
 
-      $('#left-mention').replaceWith(template({"mention": {"profile_pic_url": "https://i.pinimg.com/736x/d8/0a/38/d80a38e7f38d0a4687875d331927e299--graphic-designers-simpsons.jpg", "user_name": "Simon", "social_network": "Twitter", "message": "I wanna eat a beer or two i love beer!", "location": "London"}}));
-      $('#right-mention').replaceWith(template({"mention": {"profile_pic_url": "https://i.pinimg.com/736x/d8/0a/38/d80a38e7f38d0a4687875d331927e299--graphic-designers-simpsons.jpg", "user_name": "Simon", "social_network": "Twitter", "message": "Line rOcks!", "location": "London"}}));
-
-
-      socket.on('points', function(msg) {
-        line1.append(new Date().getTime(), msg.p);
-      });
-
-      socket.on('mentions', function(msg) {
-        console.log(msg.user_name);
-        var html = template({"mention": msg, "side": "left"});
-        // console.log(html);
-        $('#left-mention').fadeOut('fast', function() {
-            $('#left-mention').replaceWith(html);
-            $('#left-mention').fadeIn('fast');
+      function init_line(side, side_line, side_str) {
+        side.on('points', function(msg) {
+          side_line.append(new Date().getTime(), msg.p);
         });
-      });
+
+        side.on('mentions', function(msg) {
+          console.log(msg.user_name);
+          var html = template({"mention": msg, "side": side_str});
+          // console.log(html);
+          var tag = '#'+side_str+'-mention';
+          $(tag).fadeOut('fast', function() {
+              $(tag).replaceWith(html);
+              $(tag).fadeIn('fast');
+          });
+        });
+      }
+
+      init_line(left, left_line, "left");
+
+      {% if right %}
+      var right_line = new TimeSeries();
+      var right = io.connect(full_url+'/{{ right.category }}')
+
+      init_line(right, right_line, "right");
+      {% endif %}
 
 			window.addEventListener('resize', resizeCanvas, false);
 
-    function resizeCanvas() {
-						var canvas = document.getElementById("line");
-            canvas.width = window.innerWidth;
-            canvas.height = Math.max(450, window.innerHeight*0.60);
-            /**
-             * Your drawings need to be inside this function otherwise they will be reset when
-             * you resize the browser window and the canvas goes will be cleared.
-             */
-    }
-    resizeCanvas();
+      function resizeCanvas() {
+  						var canvas = document.getElementById("line");
+              canvas.width = window.innerWidth;
+              canvas.height = Math.max(450, window.innerHeight*0.60);
+              /**
+               * Your drawings need to be inside this function otherwise they will be reset when
+               * you resize the browser window and the canvas goes will be cleared.
+               */
+      }
+      resizeCanvas();
 
       var smoothie = new SmoothieChart(
         { grid: { strokeStyle: '#262626',
@@ -145,8 +154,8 @@
             precision: 0
           }
         });
-      smoothie.addTimeSeries(line1, { strokeStyle: '#d1d1d1', lineWidth: 2 });
-      smoothie.addTimeSeries(line2, { strokeStyle: '#235ba0', lineWidth: 2 });
+      smoothie.addTimeSeries(left_line, { strokeStyle: '#d1d1d1', lineWidth: 2 });
+      smoothie.addTimeSeries(right_line, { strokeStyle: '#235ba0', lineWidth: 2 });
 
       smoothie.streamTo(document.getElementById("line"), 1000);
     });

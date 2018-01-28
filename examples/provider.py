@@ -18,8 +18,8 @@ if __name__=="__main__":
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
     val = 0
-    hashtag1 = "points-#icupper"
-    hashtag2 = "points-#iclower"
+    hashtag1 = "points-ichackupper"
+    hashtag2 = "points-ichacklower"
 
     while True:
         time.sleep(0.05)

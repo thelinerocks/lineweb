@@ -18,18 +18,23 @@ def broadcast_thread():
         # get all keys for datapoints:
         keys = redis_store.keys(pattern="points-*")
         for k in keys:
-            socketio.emit('points', {"p": redis_store.lindex(k, 0)})
+            category = k.partition('-')[2]
+            socketio.emit('points', {"p": redis_store.lindex(k, 0)}, namespace="/{}".format(category))
 
 def broadcast_mentions():
     while True:
         time.sleep(1)
         keys = redis_store.keys(pattern="mentions-*")
         for k in keys:
+            category = k.partition('-')[2]
             if redis_store.llen(k) == 0:
                 continue
             element = redis_store.lpop(k)
-
-            socketio.emit('mentions'.format(k), json.loads(element))
+            try:
+                jelement = json.loads(element)
+            except ValueError:
+                continue
+            socketio.emit('mentions'.format(k), jelement, namespace="/{}".format(category))
 
 #, namespace="/{}".format(k)
 def create_app():
@@ -50,10 +55,13 @@ app = create_app()
 
 @app.route("/")
 def line():
-    tag1 = "#ichackupper"
-    tag2 = "#ichacklower"
-    tag_data = {
-        tag1 : get_data_for_hashtag(tag1),
-        tag2 : get_data_for_hashtag(tag2)
+    left = {
+        "category": "ichackupper",
+        "data": get_data_for_hashtag("ichackupper")
     }
-    return flask.render_template("index.html", tag_data=tag_data, left={"category": "foo"}, right={"category": "bar"})
+    right = {
+        "category": "ichacklower",
+        "data": get_data_for_hashtag("ichacklower")
+    }
+
+    return flask.render_template("index.html", left=left, right=right)
