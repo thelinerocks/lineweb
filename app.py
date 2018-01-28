@@ -24,7 +24,7 @@ def broadcast_thread():
 
 def broadcast_mentions():
     while True:
-        time.sleep(1)
+        time.sleep(2)
         keys = redis_store.keys(pattern="mentions-*")
         for k in keys:
             category = k.decode("utf-8").partition('-')[2]

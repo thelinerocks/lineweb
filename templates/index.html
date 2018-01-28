@@ -23,7 +23,7 @@
         <!-- <span class="logo">LINE</span> -->
       </section>
       <section class="navbar-section" style="padding-right: 1em;">
-        <button class="btn btn-primary">Create Lineoff</button>
+        <button class="btn btn-primary" disabled="true">Create Lineoff</button>
       </section>
     </header>
 
@@ -39,14 +39,14 @@
       <div class="columns">
         <div class="column col-5 col-sm-12">
           <div class="columns">
-            <div class="column col-12 hashtags">#{{ left.category }}</div>
+            <div class="column col-12 hashtags"><span style="color: #afafaf; font-size: 1.5em;">#{{ left.category }} &#8226;</span></div>
             <div class="column col-12 mentions"><div id="left-mention"><p style="text-align:center;"><i class="form-icon loading"></i></p></div></div>
           </div>
         </div>
         <div class="column col-2 hide-sm hashtags vs">vs</div>
         <div class="column col-5 col-sm-12">
           <div class="columns">
-            <div class="column col-12 hashtags">#{{ right.category }}</div>
+            <div class="column col-12 hashtags"><span style="color: #235ba0; font-size: 1.5em;">#{{ right.category }} &#8226;</span></div>
             <div class="column col-12 mentions"><div id="right-mention"><p style="text-align:center;"><i class="form-icon loading"></i></p></div></div>
           </div>
         </div>
@@ -150,6 +150,7 @@
       var smoothie = new SmoothieChart(
         { maxValueScale: 1.1,
           minValueScale: 1.1,
+          minValue: 0,
           responsive: false,
           grid: { strokeStyle: '#262626',
             fillStyle: '#262626',
