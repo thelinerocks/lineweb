@@ -19,8 +19,8 @@ if __name__=="__main__":
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
     val = 0
-    hashtag1 = "mentions-#icupper"
-    hashtag2 = "mentions-#iclower"
+    hashtag1 = "mentions-ichackupper"
+    hashtag2 = "mentions-ichacklower"
     count = 0
 
     while True:
