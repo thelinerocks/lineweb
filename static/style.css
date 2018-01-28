@@ -68,3 +68,16 @@ span.line {
   font-size: 0.8em;
   color: #afafaf;
 }
+
+.message-body {
+    margin: 0px 0px 0.05rem;
+    color: #8c8c8c;
+}
+
+.message-text {
+    color: #50596c;
+}
+
+.message-loc {
+    color: #8c8c8c;
+}
