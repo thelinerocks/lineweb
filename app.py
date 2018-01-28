@@ -18,15 +18,16 @@ def broadcast_thread():
         # get all keys for datapoints:
         keys = redis_store.keys(pattern="points-*")
         for k in keys:
-            category = k.partition('-')[2]
-            socketio.emit('points', {"p": redis_store.lindex(k, 0)}, namespace="/{}".format(category))
+            category = k.decode("utf-8").partition('-')[2]
+            val = redis_store.lindex(k, 0)
+            socketio.emit('points', {"p": float(val)}, namespace="/{}".format(category))
 
 def broadcast_mentions():
     while True:
         time.sleep(1)
         keys = redis_store.keys(pattern="mentions-*")
         for k in keys:
-            category = k.partition('-')[2]
+            category = k.decode("utf-8").partition('-')[2]
             if redis_store.llen(k) == 0:
                 continue
             element = redis_store.lpop(k)

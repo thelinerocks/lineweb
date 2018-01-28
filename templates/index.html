@@ -15,7 +15,7 @@
   <body>
     <header class="navbar dark-bg">
       <section class="navbar-section" style="padding-left: 1em;">
-        <span class="logo">LINE</span>
+        <span class="logo"><img src="{{ url_for('static', filename='logo.png') }}"</span>
         <!-- <a href="#" class="btn btn-link">Docs</a>
         <a href="#" class="btn btn-link">Examples</a> -->
       </section>
@@ -103,6 +103,7 @@
 
       function init_line(side, side_line, side_str) {
         side.on('points', function(msg) {
+          console.log(msg.p);
           side_line.append(new Date().getTime(), msg.p);
         });
 
@@ -141,7 +142,10 @@
       resizeCanvas();
 
       var smoothie = new SmoothieChart(
-        { grid: { strokeStyle: '#262626',
+        { maxValueScale: 1.1,
+          minValueScale: 1.1,
+
+          grid: { strokeStyle: '#262626',
             fillStyle: '#262626',
             lineWidth: 1,
             millisPerLine: 250,
