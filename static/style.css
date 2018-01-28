@@ -1,7 +1,8 @@
-.navbar {
+.dark-bg {
   background-color: #262626;
   color: #FFF;
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .navbar a {
@@ -55,4 +56,15 @@ span.logo {
 
 span.line {
   display: inline-block;
+}
+
+.mentions {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#footer {
+  text-align: center;
+  font-size: 0.8em;
+  color: #afafaf;
 }

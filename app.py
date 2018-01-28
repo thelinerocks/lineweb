@@ -56,4 +56,4 @@ def line():
         tag1 : get_data_for_hashtag(tag1),
         tag2 : get_data_for_hashtag(tag2)
     }
-    return flask.render_template("index.html", tag_data=tag_data)
+    return flask.render_template("index.html", tag_data=tag_data, left={"category": "foo"}, right={"category": "bar"})

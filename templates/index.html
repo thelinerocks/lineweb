@@ -10,61 +10,81 @@
   <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-
   </head>
+
   <body>
-    <header class="navbar">
-      <section class="navbar-section">
+    <header class="navbar dark-bg">
+      <section class="navbar-section" style="padding-left: 1em;">
+        <span class="logo">LINE</span>
         <!-- <a href="#" class="btn btn-link">Docs</a>
         <a href="#" class="btn btn-link">Examples</a> -->
       </section>
       <section class="navbar-center">
-        <span class="logo">LINE</span>
+        <!-- <span class="logo">LINE</span> -->
       </section>
-      <section class="navbar-section">
-        <!-- <a href="#" class="btn btn-link">Twitter</a>
-        <a href="#" class="btn btn-link">GitHub</a> -->
+      <section class="navbar-section" style="padding-right: 1em;">
+        <button class="btn btn-primary">Create Lineoff</button>
       </section>
     </header>
 
-    <div id="page" class="container" style="padding-bottom: 5px;">
-      <div class="columns">
-      <div class="col-12">
+    <div id="page" class="container">
+      <div class="columns dark-bg">
+        <div class="col-12">
         <canvas id="line" width="2000px" height="1000px"></canvas>
+        </div>
       </div>
-      </div>
-
-      <div class="columns hashtags">
-        <div class="col-5">#ichacklower</div>
-        <div class="col-2 vs">vs</div>
-        <div class="col-5">#ichackupper</div>
-      </div>
+    </div>
+    <div class="container">
+      {% if right %}
       <div class="columns">
-      	<div class="col-1"></div>
-      	<div class="col-4">
-      	  <div id="icupper">Waiting</div>
-      	</div>
-      	<div class="col-2"></div>
-      	<div class="col-5">
-      	  <div id="iclower">Waiting</div>
-      	</div>
+        <div class="column col-5 col-sm-12">
+          <div class="columns">
+            <div class="column col-12 hashtags">#{{ left.category }}</div>
+            <div class="column col-12 mentions"><div id="left-mention"></div></div>
+          </div>
+        </div>
+        <div class="column col-2 hide-sm hashtags vs">vs</div>
+        <div class="column col-5 col-sm-12">
+          <div class="columns">
+            <div class="column col-12 hashtags">#{{ right.category }}</div>
+            <div class="column col-12 mentions"><div id="right-mention"></div></div>
+          </div>
+        </div>
       </div>
+      {% else %}
+      <div class="columns">
+        <div class="column col-12">
+          <div class="columns">
+            <div class="column col-12 hashtags">#{{ left.category }}</div>
+            <div class="column col-12 mentions"><div id="left-mention"></div></div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
 
+    <div class="container">
+      <div class="columns">
+        <div id="footer" class="column col-12">
+          <p>#ichack18</p>
+        </div>
+      </div>
     </div>
 
 {% raw -%}
     <script id="handlebar-template" type="text/x-handlebars-template">
-    <div class="tile" id="{{ linetag }}">
+    <div class="tile" id="{{ side }}-mention">
       <div class="tile-icon">
         <div class="example-tile-icon">
     <figure class="avatar avatar-xl" data-initial="YA" style="background-color: #FFF;">
-      <img src="{{ profile_pic_url }}" alt="profile_pic">
+      <img src="{{ mention.profile_pic_url }}" alt="profile_pic">
     </figure>
         </div>
       </div>
       <div class="tile-content">
-        <p class="tile-title">@{{ user_name }}</p>
-        <p class="tile-subtitle text-gray">{{ message }}</p>
+        <p class="tile-title">@{{ mention.user_name }} via {{ mention.social_network }}</p>
+        <p class="tile-subtitle text-gray">{{ mention.message }}</p>
+        <p class="tile-microtitle text-grey">{{ mention.location }}</p>
       </div>
     </div>
     </script>
@@ -87,11 +107,11 @@
 
       socket.on('mentions', function(msg) {
         console.log(msg.user_name);
-        var html = template(msg);
+        var html = template({"mention": msg, "side": "left"});
         // console.log(html);
-        $('#'+msg.linetag).fadeOut('fast', function() {
-            $('#'+msg.linetag).replaceWith(html);
-            $('#'+msg.linetag).fadeIn('fast');
+        $('#left-mention').fadeOut('fast', function() {
+            $('#left-mention').replaceWith(html);
+            $('#left-mention').fadeIn('fast');
         });
       });
 
@@ -101,7 +121,6 @@
 						var canvas = document.getElementById("line");
             canvas.width = window.innerWidth;
             canvas.height = Math.max(450, window.innerHeight*0.60);
-
             /**
              * Your drawings need to be inside this function otherwise they will be reset when
              * you resize the browser window and the canvas goes will be cleared.
