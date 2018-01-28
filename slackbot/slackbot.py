@@ -2,7 +2,8 @@ import os
 import time
 import re
 import requests
-
+import random
+from text_sentiment import get_text_sentiment
 from slackclient import SlackClient
 
 # instantiate Slack client
@@ -23,25 +24,23 @@ def parse_bot_commands(slack_events):
     """
     for event in slack_events:
         if event["type"] == "message" and not "subtype" in event:
-            print(event)
-            print(slack_client.api_call("users.info", user=event["user"]))
             user_id, message = parse_direct_mention(event["text"])
             if user_id == starterbot_id:
                 return message, event["channel"]
 
-        if event["type"] == "file_shared":
-            file = event["file"]
-            print(file)
-            file_obj = slack_client.api_call("files.info", file=file["id"])
-            file_url = file_obj["file"]["url_private_download"]
-            resp = requests.get(file_url)
-            print(resp.status_code)
-            response = "Thank you, your emotions have been harvested."
-            slack_client.api_call(
-                 "chat.postMessage",
-                 channel=file_obj["file"]["channels"][0],
-                 text=response
-            )
+        # if event["type"] == "file_shared":
+        #     file = event["file"]
+        #     print(file)
+        #     file_obj = slack_client.api_call("files.info", file=file["id"])
+        #     file_url = file_obj["file"]["url_private_download"]
+        #     resp = requests.get(file_url)
+        #     print(resp.status_code)
+        #     response = "Thank you, your emotions have been harvested."
+        #     slack_client.api_call(
+        #          "chat.postMessage",
+        #          channel=file_obj["file"]["channels"][0],
+        #          text=response
+        #     )
 
     return None, None
 
@@ -59,13 +58,19 @@ def handle_command(command, channel):
         Executes bot command if the command is known
     """
     # Default response is help text for the user
-    default_response = "Not sure what you mean. Try *{}*.".format(EXAMPLE_COMMAND)
+    default_response = "Cool..."
 
-    # Finds and executes the given command, filling in response
-    response = None
-    # This is where you start to implement more commands!
-    if command.startswith(EXAMPLE_COMMAND):
-        response = "Sure...write some more code then I can do that!"
+    documents = {}
+    string = command
+    text = [{'id':'0','language':'en','text':string}]
+    documents["documents"] = text
+    sentiment = get_text_sentiment(documents)
+    score = float(sentiment["documents"][0]["score"])
+    print(score)
+    if score < 0.5:
+        response = random.choice(["Who's a grumpy little sausage?","Would you like some cheese with your whine?","Help me, I'm stuck in a computer listening to whinging students all day.","BEEP BEEP! Whinge alert.","It's not my fault you stayed up all night writing dodgy code with your buddies.","Take your whinging and put it straight in the bin."])
+    if score >= 0.5:
+        response = random.choice(["You make me nauseous with your relentless happiness.","I TOO HAVE A POSITIVE SENTIMENT AND OTHER HUMAN EMOTIONS","Tell Siri about your great day, see if she cares.","Happiness is like a delicious meal... given enough time it will rot and decay","Are you the Lego thief? It sounds like you're happy with it... I hope you step on it."])
 
     # Sends the response back to the channel
     slack_client.api_call(
